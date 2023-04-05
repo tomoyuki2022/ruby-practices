@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
-(1..20).each do |x|
-  case
-  when x % 3 == 0 && x % 5 == 0
-    x = "FizzBuzz"
-  when x % 3 == 0
-    x = "Fizz"
-  when x % 5 == 0
-    x = "Buzz"
+1.upto(20).each do |n|
+  fizzbuzz = case
+  when n % 3 == 0 && n % 5 == 0 
+    "FizzBuzz"
+  when n % 3 == 0 
+    "Fizz"
+  when n % 5 == 0 
+    "Buzz"
+  else n
   end
-  puts x
+  puts fizzbuzz
 end
