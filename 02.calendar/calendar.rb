@@ -29,4 +29,3 @@ print "   " * wday
   end
 end
 print "\n"
-
