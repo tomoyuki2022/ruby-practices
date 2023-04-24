@@ -13,15 +13,15 @@ today = Date.today
 month = option[:m] ? option[:m].to_i : today.month
 year = option[:y] ? option[:y].to_i : today.year
 
-wday = Date.new(year, month, 1).wday
-first_day = Date.new(year, month, 1)
-last_day = Date.new(year, month, -1)
-
 puts "#{month}月 #{year}年".center(20)
 puts "日 月 火 水 木 金 土"
-print "   " * wday
 
-(first_day..last_day).each do |date|
+first_date = Date.new(year, month, 1)
+last_date = Date.new(year, month, -1)
+
+print "   " * first_date.wday
+
+(first_date..last_date).each do |date|
   print date.day.to_s.rjust(2) + " "
   if date.saturday?
     print "\n"
