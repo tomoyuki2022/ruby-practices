@@ -1,31 +1,29 @@
 #! /usr/bin/env ruby
 # frozen_string_literal: true
 
-def files
-  Dir.glob('*')
-end
-
 COLUMN = 3
-def ls
+def ls_no_option
+  files = Dir.glob('*')
   file_length = files.length
   file_row = (file_length / COLUMN.to_f).ceil
 
-  file = Array.new(file_row) { Array.new(COLUMN) }
-
+  file = []
   files.each_with_index do |file_name, index|
-    row_col = index.divmod(file_row)
-    row = row_col[1]
-    col = row_col[0]
-    file[row][col] = file_name
+    row = index % file_row
+    file[row] ||= []
+    file[row] << file_name
   end
+  file
+end
 
-  space = files.map(&:length).max + 7
-
-  file.each do |row|
+def ls_no_option_output
+  ls_file = ls_no_option
+  space = ls_file.flatten.map(&:length).max + 7
+  ls_file.each do |row|
     row.each do |file_name|
       print file_name.ljust(space) unless file_name.nil?
     end
     puts
   end
 end
-ls
+ls_no_option_output
