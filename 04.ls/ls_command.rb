@@ -2,13 +2,13 @@
 # frozen_string_literal: true
 
 COLUMN = 3
-def ls_no_option
-  files = Dir.glob('*')
-  file_length = files.length
+def prepare_output
+  get_files = Dir.glob('*')
+  file_length = get_files.length
   file_row = (file_length / COLUMN.to_f).ceil
 
   file = []
-  files.each_with_index do |file_name, index|
+  get_files.each_with_index do |file_name, index|
     row = index % file_row
     file[row] ||= []
     file[row] << file_name
@@ -16,8 +16,8 @@ def ls_no_option
   file
 end
 
-def ls_no_option_output
-  ls_file = ls_no_option
+def output_ls_no_option
+  ls_file = prepare_output
   space = ls_file.flatten.map(&:length).max + 7
   ls_file.each do |row|
     row.each do |file_name|
@@ -26,4 +26,4 @@ def ls_no_option_output
     puts
   end
 end
-ls_no_option_output
+output_ls_no_option
