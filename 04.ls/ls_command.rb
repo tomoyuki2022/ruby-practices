@@ -17,9 +17,9 @@ def prepare_output
 end
 
 def output_ls_no_option
-  ls_file = prepare_output
-  space = ls_file.flatten.map(&:length).max + 7
-  ls_file.each do |row|
+  sorted_file = prepare_output
+  space = sorted_file.flatten.map(&:length).max + 7
+  sorted_file.each do |row|
     row.each do |file_name|
       print file_name.ljust(space) unless file_name.nil?
     end
