@@ -2,13 +2,17 @@
 # frozen_string_literal: true
 
 COLUMN = 3
-def prepare_output
-  get_files = Dir.glob('*')
-  file_length = get_files.length
+def filename_list_acquisition
+  Dir.glob('*')
+end
+
+def sort_file
+  get_file = filename_list_acquisition
+  file_length = get_file.length
   file_row = (file_length / COLUMN.to_f).ceil
 
   file = []
-  get_files.each_with_index do |file_name, index|
+  get_file.each_with_index do |file_name, index|
     row = index % file_row
     file[row] ||= []
     file[row] << file_name
@@ -17,7 +21,7 @@ def prepare_output
 end
 
 def output_ls_no_option
-  sorted_file = prepare_output
+  sorted_file = sort_file
   space = sorted_file.flatten.map(&:length).max + 7
   sorted_file.each do |row|
     row.each do |file_name|
