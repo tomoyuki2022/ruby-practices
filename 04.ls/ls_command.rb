@@ -2,28 +2,28 @@
 # frozen_string_literal: true
 
 COLUMN = 3
-def filename_list_acquisition
+
+def filenames
   Dir.glob('*')
 end
 
-def sort_file
-  get_file = filename_list_acquisition
-  file_length = get_file.length
+def sort_filenames(unsorted_files)
+  file_length = unsorted_files.length
   file_row = (file_length / COLUMN.to_f).ceil
 
-  file = []
-  get_file.each_with_index do |file_name, index|
+  files = []
+  unsorted_files.each_with_index do |file_name, index|
     row = index % file_row
-    file[row] ||= []
-    file[row] << file_name
+    files[row] ||= []
+    files[row] << file_name
   end
-  file
+  files
 end
 
 def output_ls_no_option
-  sorted_file = sort_file
-  space = sorted_file.flatten.map(&:length).max + 7
-  sorted_file.each do |row|
+  sorted_filenames = sort_filenames(filenames)
+  space = sorted_filenames.flatten.map(&:length).max + 7
+  sorted_filenames.each do |row|
     row.each do |file_name|
       print file_name.ljust(space) unless file_name.nil?
     end
