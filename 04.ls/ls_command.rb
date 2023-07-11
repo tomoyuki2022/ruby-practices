@@ -7,12 +7,12 @@ def filenames
   Dir.glob('*')
 end
 
-def sort_filenames(unsorted_files)
-  file_length = unsorted_files.length
+def chunk_filenames(unchunked_files)
+  file_length = unchunked_files.length
   file_row = (file_length / COLUMN.to_f).ceil
 
   files = []
-  unsorted_files.each_with_index do |file_name, index|
+  unchunked_files.each_with_index do |file_name, index|
     row = index % file_row
     files[row] ||= []
     files[row] << file_name
@@ -21,9 +21,9 @@ def sort_filenames(unsorted_files)
 end
 
 def output_ls_no_option
-  sorted_filenames = sort_filenames(filenames)
-  space = sorted_filenames.flatten.map(&:length).max + 7
-  sorted_filenames.each do |row|
+  chunked_filenames = chunk_filenames(filenames)
+  space = chunked_filenames.flatten.map(&:length).max + 7
+  chunked_filenames.each do |row|
     row.each do |file_name|
       print file_name.ljust(space) unless file_name.nil?
     end
