@@ -5,12 +5,11 @@ require 'optparse'
 
 COLUMN = 3
 
-def filenames
-  Dir.glob('*')
-end
+OPTION = ARGV.getopts('a')
 
-def dotmatch_filenames
-  Dir.glob('*', File::FNM_DOTMATCH)
+def filenames
+  flags = OPTION['a'] ? File::FNM_DOTMATCH : 0
+  Dir.glob('*', flags)
 end
 
 def chunk_filenames(unchunked_files)
@@ -36,12 +35,4 @@ def output(chunked_filenames)
   end
 end
 
-def set_option
-  option = ARGV.getopts('a')
-  if option['a']
-    output(chunk_filenames(dotmatch_filenames))
-  else
-    output(chunk_filenames(filenames))
-  end
-end
-set_option
+output(chunk_filenames(filenames))
