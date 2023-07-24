@@ -1,10 +1,13 @@
 #! /usr/bin/env ruby
 # frozen_string_literal: true
 
+require 'optparse'
+
 COLUMN = 3
 
 def filenames
-  Dir.glob('*')
+  flags = option['a'] ? File::FNM_DOTMATCH : 0
+  Dir.glob('*', flags)
 end
 
 def chunk_filenames(unchunked_files)
@@ -20,8 +23,7 @@ def chunk_filenames(unchunked_files)
   files
 end
 
-def output_ls_no_option
-  chunked_filenames = chunk_filenames(filenames)
+def output(chunked_filenames)
   space = chunked_filenames.flatten.map(&:length).max + 7
   chunked_filenames.each do |row|
     row.each do |file_name|
@@ -30,4 +32,9 @@ def output_ls_no_option
     puts
   end
 end
-output_ls_no_option
+
+def option
+  ARGV.getopts('a')
+end
+
+output(chunk_filenames(filenames))
