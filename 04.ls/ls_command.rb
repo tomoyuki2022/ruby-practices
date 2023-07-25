@@ -6,8 +6,7 @@ require 'optparse'
 COLUMN = 3
 
 def filenames
-  flags = option['a'] ? File::FNM_DOTMATCH : 0
-  Dir.glob('*', flags)
+  Dir.glob('*')
 end
 
 def chunk_filenames(unchunked_files)
@@ -34,7 +33,8 @@ def output(chunked_filenames)
 end
 
 def option
-  ARGV.getopts('a')
+  option_r = ARGV.getopts('r')
+  option_r['r'] ? filenames.reverse : filenames
 end
 
-output(chunk_filenames(filenames))
+output(chunk_filenames(option))
