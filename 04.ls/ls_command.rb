@@ -34,7 +34,8 @@ end
 
 def option
   option_r = ARGV.getopts('r')
-  option_r['r'] ? filenames.reverse : filenames
+  target_filenames = option_r['r'] ? filenames.reverse : filenames
+  output(chunk_filenames(target_filenames))
 end
 
-output(chunk_filenames(option))
+option
