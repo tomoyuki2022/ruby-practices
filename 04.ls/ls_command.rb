@@ -14,7 +14,8 @@ def chunk_filenames(unchunked_filenames)
   file_row = (file_length / COLUMN.to_f).ceil
 
   files = []
-  target_filenames = option['r'] ? unchunked_filenames.reverse : unchunked_filenames
+  params = option
+  target_filenames = params['r'] ? unchunked_filenames.reverse : unchunked_filenames
   target_filenames.each_with_index do |file_name, index|
     row = index % file_row
     files[row] ||= []
