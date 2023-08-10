@@ -9,13 +9,12 @@ def filenames
   Dir.glob('*')
 end
 
-def chunk_filenames(unchunked_filenames)
+def chunk_filenames(unchunked_filenames, options)
   file_length = unchunked_filenames.length
   file_row = (file_length / COLUMN.to_f).ceil
 
   files = []
-  params = option
-  target_filenames = params['r'] ? unchunked_filenames.reverse : unchunked_filenames
+  target_filenames = options['r'] ? unchunked_filenames.reverse : unchunked_filenames
   target_filenames.each_with_index do |file_name, index|
     row = index % file_row
     files[row] ||= []
@@ -34,12 +33,13 @@ def output(chunked_filenames)
   end
 end
 
-def option
+def parse_options
   ARGV.getopts('r')
 end
 
 def exec_ls_command
-  chunked_filenames = chunk_filenames(filenames)
+  options = parse_options
+  chunked_filenames = chunk_filenames(filenames, options)
   output(chunked_filenames)
 end
 
