@@ -62,15 +62,11 @@ def permission(mode)
 end
 
 def block_number
-  sum = 0
-  filenames.each do |filename|
-    stats = File::Stat.new(filename)
-    sum += stats.blocks
-  end
-  puts "total #{sum}"
+  total_blocks = filenames.sum { |filename| File::Stat.new(filename).blocks }
+  puts "total #{total_blocks}"
 end
 
-def ls_l
+def output_ls_l
   block_number
   filenames.each do |filename|
     stats = File::Stat.new(filename)
@@ -92,7 +88,7 @@ end
 def exec_ls_command
   options = parse_options
   chunked_filenames = chunk_filenames(filenames)
-  options['l'] ? ls_l : output(chunked_filenames)
+  options['l'] ? output_ls_l : output(chunked_filenames)
 end
 
 exec_ls_command
