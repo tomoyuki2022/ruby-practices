@@ -66,7 +66,7 @@ def block_number
   puts "total #{total_blocks}"
 end
 
-def ls_l
+def output_long
   block_number
   filenames.each do |filename|
     stats = File::Stat.new(filename)
@@ -85,14 +85,14 @@ def parse_options
   ARGV.getopts('l')
 end
 
-def ls_other
+def output_short
   chunked_filenames = chunk_filenames(filenames)
   output(chunked_filenames)
 end
 
 def exec_ls_command
   options = parse_options
-  options['l'] ? ls_l : ls_other
+  options['l'] ? output_long : output_short
 end
 
 exec_ls_command
