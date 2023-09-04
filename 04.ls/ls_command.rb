@@ -44,7 +44,7 @@ def chunk_filenames(unchunked_filenames)
   files
 end
 
-def output(chunked_filenames)
+def output_filenames(chunked_filenames)
   space = chunked_filenames.flatten.map(&:length).max + 7
   chunked_filenames.each do |row|
     row.each do |file_name|
@@ -87,7 +87,7 @@ end
 
 def output_short
   chunked_filenames = chunk_filenames(filenames)
-  output(chunked_filenames)
+  output_filenames(chunked_filenames)
 end
 
 def exec_ls_command
