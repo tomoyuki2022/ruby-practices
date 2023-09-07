@@ -27,16 +27,18 @@ FILE_TYPE = {
   'socket' => 's'
 }.freeze
 
-def filenames
-  Dir.glob('*')
+def filenames(options)
+  flags = options['a'] ? File::FNM_DOTMATCH : 0
+  Dir.glob('*', flags)
 end
 
-def chunk_filenames(unchunked_filenames)
+def chunk_filenames(unchunked_filenames, options)
   file_length = unchunked_filenames.length
   file_row = (file_length / COLUMN.to_f).ceil
 
   files = []
-  unchunked_filenames.each_with_index do |file_name, index|
+  target_filenames = options['r'] ? unchunked_filenames.reverse : unchunked_filenames
+  target_filenames.each_with_index do |file_name, index|
     row = index % file_row
     files[row] ||= []
     files[row] << file_name
@@ -61,14 +63,15 @@ def permission(mode)
   "#{owner}#{group}#{other}"
 end
 
-def block_number
-  total_blocks = filenames.sum { |filename| File::Stat.new(filename).blocks }
+def block_number(options)
+  total_blocks = filenames(options).sum { |filename| File::Stat.new(filename).blocks }
   puts "total #{total_blocks}"
 end
 
-def output_long
-  block_number
-  filenames.each do |filename|
+def output_long(options)
+  block_number(options)
+  target_filenames = options['r'] ? filenames(options).reverse : filenames(options)
+  target_filenames.each do |filename|
     stats = File::Stat.new(filename)
     file_type = FILE_TYPE[File.ftype(filename)]
     permissions = permission(stats.mode.to_s(8))
@@ -77,22 +80,22 @@ def output_long
     group = Etc.getgrgid(stats.gid).name
     size = stats.size
     time = stats.mtime.strftime('%_m %d %H:%M')
-    puts "#{file_type}#{permissions}  #{hard_link} #{owner}  #{group} #{size.to_s.rjust(5)} #{time} #{filename}"
+    puts "#{file_type}#{permissions}  #{hard_link.to_s.rjust(2)} #{owner}  #{group} #{size.to_s.rjust(5)} #{time} #{filename}"
   end
 end
 
 def parse_options
-  ARGV.getopts('l')
+  ARGV.getopts('a', 'r', 'l')
 end
 
-def output_short
-  chunked_filenames = chunk_filenames(filenames)
+def output_short(options)
+  chunked_filenames = chunk_filenames(filenames(options), options)
   output_filenames(chunked_filenames)
 end
 
 def exec_ls_command
   options = parse_options
-  options['l'] ? output_long : output_short
+  options['l'] ? output_long(options) : output_short(options)
 end
 
 exec_ls_command
