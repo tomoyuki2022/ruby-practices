@@ -7,16 +7,27 @@ def parse_filenames
   ARGV
 end
 
-def read_input_file_count_output(options)
-  readed_file = $stdin.read
-  line = readed_file.count("\n")
-  word = readed_file.split(/\s+/).size
-  byte = readed_file.size
+def input_text
+  gets('')
+end
+
+def read_output_file
+  $stdin.read
+end
+
+def target_count_output(file_or_text, options)
+  line = file_or_text.count("\n")
+  word = file_or_text.split(/\s+/).size
+  byte = file_or_text.size
   output = []
   output << line.to_s.rjust(8) if options[:l]
   output << word.to_s.rjust(8) if options[:w]
   output << byte.to_s.rjust(8) if options[:c]
   puts output.join('')
+end
+
+def target
+  $stdin.tty? ? read_output_file : input_text
 end
 
 def count(filenames)
@@ -77,7 +88,7 @@ unless options.values.any?
 end
 
 def execution_wc_command(options)
-  $stdin.tty? ? count_stats_output(options) : read_input_file_count_output(options)
+  ARGV.any? ? count_stats_output(options) : target_count_output(target, options)
 end
 
 execution_wc_command(options)
