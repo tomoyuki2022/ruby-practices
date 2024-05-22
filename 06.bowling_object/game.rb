@@ -11,8 +11,7 @@ class Game
   def score
     total_score = 0
     build_frames_from_shots.each.with_index do |frame_shot, i|
-      frame = Frame.new(*frame_shot)
-      total_score += calculate_frame_scores(frame, i)
+      total_score += calculate_frame_scores(frame_shot, i)
     end
     puts total_score
   end
@@ -22,41 +21,18 @@ class Game
   def build_frames_from_shots
     frames = []
     i = 0
-    while i < @shots.size
-      i = if @shots[i] == 'X'
-            add_strike_shot_to_frames(frames, @shots, i)
-          else
-            add_shot_to_frames(frames, @shots, i)
-          end
-    end
+    i = add_shot_to_frames(frames, @shots, i) while i < @shots.size
     frames
   end
 
-  def add_strike_shot_to_frames(frames, shots, index)
-    frames << [shots[index]]
-    index + 1
-  end
-
   def add_shot_to_frames(frames, shots, index)
-    frames << [shots[index], shots[index + 1]]
-    index + 2
-  end
-
-  def next_frame(index)
-    build_frames_from_shots[index + 1]
-  end
-
-  def next_next_frame(index)
-    build_frames_from_shots[index + 2] ||= []
-  end
-
-  def connect_frame_scores(index)
-    connected_frame_scores = next_frame(index) + next_next_frame(index)
-    connected_frame_scores.slice(0, 2)
-  end
-
-  def score_from_marks(marks)
-    marks.map { |m| Shot.new(m).score }
+    if shots[index] == Shot::STRIKE_MARK
+      frames << Frame.new(shots[index])
+      index + 1
+    else
+      frames << Frame.new(shots[index], shots[index + 1])
+      index + 2
+    end
   end
 
   def calculate_frame_scores(frame, index)
@@ -78,11 +54,14 @@ class Game
   end
 
   def calculate_strike_points(index)
-    score_from_marks(connect_frame_scores(index)).sum
+    next_frame = build_frames_from_shots[index + 1]
+    next_next_frame = build_frames_from_shots[index + 2]
+    connected_frame_scores = next_frame.shots + (next_next_frame ? next_next_frame.shots : [])
+    connected_frame_scores.slice(0, 2).sum(&:score)
   end
 
   def calculate_spare_points(index)
-    score_from_marks(next_frame(index)).first
+    build_frames_from_shots[index + 1].shots.first.score
   end
 end
 
