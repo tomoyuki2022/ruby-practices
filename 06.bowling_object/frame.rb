@@ -4,21 +4,26 @@ require_relative 'shot'
 
 # 各フレームの合計を出す
 class Frame
+  STRIKE = 10
+  attr_accessor :shots
+
   def initialize(first_mark, second_mark = nil, third_mark = nil)
-    @first_shot = Shot.new(first_mark)
-    @second_shot = Shot.new(second_mark)
-    @third_shot = Shot.new(third_mark)
+    @shots = [first_mark, second_mark, third_mark].compact.map { |mark| Shot.new(mark) }
   end
 
   def score
-    [@first_shot.score, @second_shot.score, @third_shot.score].sum
+    @shots.sum(&:score)
   end
 
   def strike?
-    @first_shot.score == 10
+    @shots.first.score == STRIKE
   end
 
   def spare?
-    @first_shot.score + @second_shot.score == 10
+    if @shots.first.score != STRIKE
+      @shots.slice(0, 2).sum(&:score) == 10
+    else
+      false
+    end
   end
 end
