@@ -20,6 +20,7 @@ class Frame
   end
 
   def spare?
-    !strike? ? @shots.slice(0, 2).sum(&:score) == 10 : false
+    return false if strike?
+    @shots.slice(0, 2).sum(&:score) == 10
   end
 end
