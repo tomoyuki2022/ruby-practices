@@ -2,22 +2,21 @@
 
 module Ls
   class LongFormat
-    def initialize(file_list, file_path)
-      @file_list = file_list
-      @file_paths = file_path
+    def initialize(files)
+      @files = files
     end
 
     def format
-      row_data = @file_list.map do |list|
-        stat = ::File::Stat.new(list)
-        @file_paths.build_stat(list, stat)
+      puts "total #{@files.map(&:blocks).sum}"
+      @files.map do |file|
+        print file.type_and_permission
+        print " #{file.hard_link.to_s.rjust(2)}"
+        print " #{file.owner}"
+        print "  #{file.group}"
+        print " #{file.size.to_s.rjust(5)}"
+        print " #{file.time}"
+        print " #{file.name}\n"
       end
-      long_format = row_data.map do |data|
-        @file_paths.format_row(data)
-      end
-      block_total = row_data.map { |data| data[:blocks] }.sum
-      puts "total #{block_total}"
-      puts long_format
     end
   end
 end
