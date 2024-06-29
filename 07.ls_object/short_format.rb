@@ -3,13 +3,13 @@
 module Ls
   class ShortFormat
     COLUMN = 3
-    def initialize(file_list)
-      @file_list = file_list
+    def initialize(files)
+      @files = files
     end
 
     def format
-      space = chunk_file_list.flatten.map(&:length).max + 7
-      chunk_file_list.each do |row|
+      space = chunk_file_names.flatten.map(&:length).max + 7
+      chunk_file_names.each do |row|
         row.each do |file_list|
           print file_list.ljust(space) unless file_list.nil?
         end
@@ -19,16 +19,20 @@ module Ls
 
     private
 
-    def chunk_file_list
-      file_length = @file_list.length
+    def chunk_file_names
+      file_length = file_names.length
       file_row = (file_length / COLUMN.to_f).ceil
       files = []
-      @file_list.each_with_index do |list, index|
+      file_names.each_with_index do |list, index|
         row = index % file_row
         files[row] ||= []
         files[row] << list
       end
       files
+    end
+
+    def file_names
+      @files.map(&:name)
     end
   end
 end
