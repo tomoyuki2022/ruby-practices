@@ -7,27 +7,21 @@ require_relative 'long_format'
 
 module Ls
   class Command
-    COLUMN = 3
     def initialize
-      @options = Option.new
-      @file_paths = search_path
+      @option = Option.new
     end
 
     def run
-      ls_short = Ls::ShortFormat.new(file_list)
-      ls_long = Ls::LongFormat.new(file_list, @file_paths)
-      @options.long_format? ? ls_long.format : ls_short.format
+      files = match_files_by_option.map { |file| Ls::File.new(file) }
+      @option.long_format? ? Ls::LongFormat.new(files).format : Ls::ShortFormat.new(files).format
     end
 
     private
 
-    def search_path
-      flags = @options.dot_match? ? ::File::FNM_DOTMATCH : 0
-      Ls::File.new(Dir.glob('*', flags))
-    end
-
-    def file_list
-      @options.reverse? ? @file_paths.names.reverse : @file_paths.names
+    def match_files_by_option
+      flags = @option.dot_match? ? ::File::FNM_DOTMATCH : 0
+      files = Dir.glob('*', flags)
+      @option.reverse? ? files.reverse : files
     end
   end
 end
