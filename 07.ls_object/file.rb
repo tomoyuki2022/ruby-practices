@@ -25,40 +25,44 @@ module Ls
       'socket' => 's'
     }.freeze
 
-    attr_reader :names
+    attr_reader :name
 
-    def initialize(path)
-      @names = path
+    def initialize(name)
+      @name = name
+      @stat = ::File::Stat.new(name)
     end
 
-    def build_stat(file_list, stats)
-      {
-        type_and_permission: type_and_permission(stats.mode.to_s(8), file_list),
-        hard_link: stats.nlink,
-        owner: Etc.getpwuid(stats.uid).name,
-        group: Etc.getgrgid(stats.gid).name,
-        size: stats.size,
-        time: stats.mtime.strftime('%_m %e %H:%M'),
-        filename: file_list,
-        blocks: stats.blocks
-      }
+    def type_and_permission
+      combine_type_and_permission(@stat.mode.to_s(8), @name)
     end
 
-    def format_row(data)
-      [
-        data[:type_and_permission].to_s,
-        " #{data[:hard_link].to_s.rjust(2)}",
-        " #{data[:owner]}",
-        "  #{data[:group]}",
-        " #{data[:size].to_s.rjust(5)}",
-        " #{data[:time]}",
-        " #{data[:filename]}"
-      ].join
+    def hard_link
+      @stat.nlink
+    end
+
+    def owner
+      Etc.getpwuid(@stat.uid).name
+    end
+
+    def group
+      Etc.getgrgid(@stat.gid).name
+    end
+
+    def size
+      @stat.size
+    end
+
+    def time
+      @stat.mtime.strftime('%_m %e %H:%M')
+    end
+
+    def blocks
+      @stat.blocks
     end
 
     private
 
-    def type_and_permission(mode, file_list)
+    def combine_type_and_permission(mode, file_list)
       type = FILE_TYPE[::File.ftype(file_list)]
       owner = PERMISSION[mode[-3].to_i]
       group = PERMISSION[mode[-2].to_i]
