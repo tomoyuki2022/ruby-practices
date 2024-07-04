@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ls
-  class ShortFormat
+  class ShortFormatter
     COLUMN = 3
     def initialize(files)
       @files = files
