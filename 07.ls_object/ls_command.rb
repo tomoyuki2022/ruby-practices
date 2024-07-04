@@ -12,13 +12,14 @@ module Ls
     end
 
     def run
-      files = match_files_by_option.map { |file| Ls::File.new(file) }
-      @option.long_format? ? Ls::LongFormat.new(files).format : Ls::ShortFormat.new(files).format
+      files = match_files.map { |file| Ls::File.new(file) }
+      formatter = @option.long_format? ? Ls::LongFormatter.new(files) : Ls::ShortFormatter.new(files)
+      formatter.format
     end
 
     private
 
-    def match_files_by_option
+    def match_files
       flags = @option.dot_match? ? ::File::FNM_DOTMATCH : 0
       files = Dir.glob('*', flags)
       @option.reverse? ? files.reverse : files
