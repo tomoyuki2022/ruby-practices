@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Ls
-  class LongFormat
+  class LongFormatter
     def initialize(files)
       @files = files
     end
