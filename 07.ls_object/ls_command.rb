@@ -2,8 +2,8 @@
 
 require_relative 'file'
 require_relative 'option'
-require_relative 'short_format'
-require_relative 'long_format'
+require_relative 'short_formatter'
+require_relative 'long_formatter'
 
 module Ls
   class Command
